@@ -43,19 +43,35 @@ class Graph:
     self.nodes = {} # Nodes dictionary.
     self.edges = [] # List of edges.
     self.directed = is_directed
+  
+  """
+  DFS
+  """
+  def has_path_dfs(self, source, destination):
+    visited_nodes = set()
+    return self.__process_inputs(source, destination, self.__has_path_dfs, visited_nodes)
+
+  def __has_path_dfs(self, source, destination, visited_nodes):
+    if source.id in visited_nodes:
+      return False
+
+    visited_nodes.add(source.id)
+
+    if source == destination:
+      return True
+
+    for adjacent_edge in source.adjacents:
+      there_is_path = self.__has_path_dfs(adjacent_edge.destination, destination, visited_nodes)
+      if there_is_path:
+        return True
+
+    return False
 
   """
   BFS
   """
   def has_path_bfs(self, source, destination):
-
-    if isinstance(source, Node) and isinstance(destination, Node):
-      return self.__has_path_bfs(source, destination)
-    elif isinstance(source, numbers.Number):
-      source_node = self.get_node(source)
-      destination_node = self.get_node(destination)
-
-      return self.__has_path_bfs(source_node, destination_node)
+    return self.__process_inputs(source, destination, self.__has_path_bfs)
 
   def __has_path_bfs(self, source, destination):
     visited_nodes = set()
@@ -78,6 +94,18 @@ class Graph:
         unvisited_adjacent_nodes.append(child_edge.destination)
 
     return False
+
+  """
+  Process source and destination inputs.
+  """
+  def __process_inputs(self, source, destination, method, *args):
+    if isinstance(source, Node) and isinstance(destination, Node):
+      return method(source, destination, *args)
+    elif isinstance(source, numbers.Number):
+      source_node = self.get_node(source)
+      destination_node = self.get_node(destination)
+
+      return method(source_node, destination_node, *args)
 
   def add_node(self, value):
     new_id = self.__generate_next_node_id()

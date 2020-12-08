@@ -10,6 +10,8 @@ graph.add_edge(n1.id, n2.id, "i")
 graph.add_edge(n2.id, n3.id, "k")
 
 
-there_is_path = graph.has_path_bfs(n1, n3)
+there_is_path1 = graph.has_path_dfs(n1, n3)
+there_is_path2 = graph.has_path_bfs(n1, n3)
 
-print(f"there_is_path: {there_is_path}")
+print(f"there_is_path: {there_is_path1}")
+print(f"there_is_path: {there_is_path2}")
