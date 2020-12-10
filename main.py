@@ -1,4 +1,6 @@
 from graph import Graph
+from agent import Agent
+from letter import Letter
 
 def test_bfs_and_dfs():
   graph = Graph()
@@ -18,44 +20,60 @@ def test_bfs_and_dfs():
   print(f"there_is_path: {there_is_path2}")
 
 def test_best_first_search():
-  graph = Graph()
+  states_space = Graph[Letter]()
 
   # Insert nodes
-  s = graph.add_node("S")
-  a = graph.add_node("A")
-  b = graph.add_node("B")
-  c = graph.add_node("C")
-  d = graph.add_node("D")
-  e = graph.add_node("E")
-  f = graph.add_node("F")
-  g = graph.add_node("G")
-  h = graph.add_node("H")
-  i = graph.add_node("I")
-  j = graph.add_node("J")
-  k = graph.add_node("K")
-  l = graph.add_node("L")
+  s = states_space.add_node(Letter("S"))
+  a = states_space.add_node(Letter("A"))
+  b = states_space.add_node(Letter("B"))
+  c = states_space.add_node(Letter("C"))
+  d = states_space.add_node(Letter("D"))
+  e = states_space.add_node(Letter("E"))
+  f = states_space.add_node(Letter("F"))
+  g = states_space.add_node(Letter("G"))
+  h = states_space.add_node(Letter("H"))
+  i = states_space.add_node(Letter("I"))
+  j = states_space.add_node(Letter("J"))
+  k = states_space.add_node(Letter("K"))
+  l = states_space.add_node(Letter("L"))
 
   # Connect them
-  graph.add_edge(s, a, 7)
-  graph.add_edge(s, b, 2)
-  graph.add_edge(s, c, 3)
+  states_space.add_edge(s, a, 7)
+  states_space.add_edge(s, b, 2)
+  states_space.add_edge(s, c, 3)
 
-  graph.add_edge(a, d, 4)
-  graph.add_edge(a, b, 3)
-  graph.add_edge(d, f, 5)
+  states_space.add_edge(a, d, 4)
+  states_space.add_edge(a, b, 3)
+  states_space.add_edge(d, f, 5)
 
-  graph.add_edge(b, d, 4)
-  graph.add_edge(b, h, 1)
-  graph.add_edge(h, f, 3)
-  graph.add_edge(h, g, 2)
-  graph.add_edge(g, e, 2)
+  states_space.add_edge(b, d, 4)
+  states_space.add_edge(b, h, 1)
+  states_space.add_edge(h, f, 3)
+  states_space.add_edge(h, g, 2)
+  states_space.add_edge(g, e, 2)
 
-  graph.add_edge(c, l, 2)
-  graph.add_edge(l, i, 4)
-  graph.add_edge(l, j, 4)
-  graph.add_edge(i, k, 4)
-  graph.add_edge(j, k, 4)
-  graph.add_edge(k, e, 5)
+  states_space.add_edge(c, l, 2)
+  states_space.add_edge(l, i, 4)
+  states_space.add_edge(l, j, 4)
+  states_space.add_edge(i, k, 4)
+  states_space.add_edge(j, k, 4)
+  states_space.add_edge(k, e, 5)
 
-  # there_is_path = graph.has_path_best_first_search(s, e)
-  # print(f"there_is_path: {there_is_path}")
+  agent = Agent(states_space)
+  there_is_path = agent.state_exists(Letter('E'))
+
+  print(f"there_is_path: {there_is_path}")
+
+test_best_first_search()
+
+"""
+The heuristic function handling using OOP:
+
+- Type    Override: ==
+- Node	  Override: < and >
+- Queue   Uses: 
+- Graph
+- Agent
+"""
+
+

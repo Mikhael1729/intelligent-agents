@@ -1,49 +1,16 @@
 import numbers
+from node import Node
+from edge import Edge
+from typing import Generic, TypeVar
 
-"""
-Represent a node in a graph.
-"""
-class Node:
-  """
-  id: identificator of the node. It allows differentiate it from others.
-  value: Any static data you want to store.
-  adjacents: List of edges. Indicate the connection between this node and others.
-  """
-  def __init__(self, id, value=None, adjacents=None):
-    self.id = id
-    self.value = value 
-    self.adjacents = adjacents if adjacents else []
+T = TypeVar('T')
 
-  def __str__(self):
-    return f"Node(id: {self.id}, value: {self.value})"
-
-  def __eq__(self, other):
-    if isinstance(other, Node):
-      return self.id == other.id
-
-    return False
-
-class Edge:
-  """
-  value: Symbol of the transition
-  source: Node source
-  destination Node destination
-  """
-  def __init__(self, id, source, destination, value=None):
-    self.id = id
-    self.source = source
-    self.destination = destination
-    self.value = value
-
-  def __str__(self):
-    return f"Edge(id: {self.id}, value: {self.value}, source: {self.source}, destination: {self.destination})"
-
-class Graph:
+class Graph(Generic[T]):
   def __init__(self, is_directed=True):
     self.nodes = {} # Nodes dictionary.
     self.edges = [] # List of edges.
     self.directed = is_directed
-  
+
   """
   DFS
   """
@@ -95,21 +62,9 @@ class Graph:
 
     return False
 
-  """
-  Process source and destination inputs.
-  """
-  def __process_inputs(self, source, destination, method, *args):
-    if isinstance(source, Node) and isinstance(destination, Node):
-      return method(source, destination, *args)
-    elif isinstance(source, numbers.Number):
-      source_node = self.get_node(source)
-      destination_node = self.get_node(destination)
-
-      return method(source_node, destination_node, *args)
-
   def add_node(self, value):
     new_id = self.__generate_next_node_id()
-    new_node = Node(new_id, value=value)
+    new_node = Node[T](new_id, value=value)
     self.nodes[new_id] = new_node
 
     return new_node
@@ -118,20 +73,23 @@ class Graph:
     new_id = len(self.nodes)
     return new_id
 
-  def add_edge(self, source_id, destination_id, value=None):
+  def add_edge(self, source, destination, value):
+    self.__process_inputs(source, destination, self.__add_edge, value)
+
+  def __add_edge(self, source_node, destination_node, value=None):
     new_edge = Edge(
       id = self.__generate_next_edge_id(),
       value = value,
-      source = self.get_node(source_id),
-      destination = self.get_node(destination_id)
+      source = source_node,
+      destination = destination_node
     )
 
     self.edges.append(new_edge)
 
-    self.nodes[source_id].adjacents.append(new_edge)
+    self.nodes[source_node.id].adjacents.append(new_edge)
 
     if not self.directed:
-      self.nodes[destination_id].adjacents.append(new_edge)
+      self.nodes[destination_node.id].adjacents.append(new_edge)
 
     return new_edge
 
@@ -146,4 +104,16 @@ class Graph:
     else:
       print("NODE DOESN'T EXISTS")
       return None
+
+  """
+  Process source and destination inputs.
+  """
+  def __process_inputs(self, source, destination, method, *args):
+    if isinstance(source, Node) and isinstance(destination, Node):
+      return method(source, destination, *args)
+    elif isinstance(source, numbers.Number) and isinstance(destination, numbers.Number):
+      source_node = self.get_node(source)
+      destination_node = self.get_node(destination)
+
+      return method(source_node, destination_node, *args)
 
