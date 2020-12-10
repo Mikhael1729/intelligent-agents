@@ -23,6 +23,10 @@ class Letter:
 
     return False
 
+  """
+  Heuristic function. It returns the stimated value of how much
+  takes to go from given letter to the goal (E)
+  """
   @property
   def goal_difference(self):
     if self.letter == "S":
