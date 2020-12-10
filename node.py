@@ -13,7 +13,7 @@ class Node(Generic[T]):
   """
   def __init__(self, id, value=None, adjacents=None):
     self.id: int = id
-    self.value: str = value 
+    self.value: T = value 
     self.adjacents: List[Node[T]] = adjacents if adjacents else []
 
   def __str__(self):
