@@ -3,7 +3,7 @@ class Letter:
     self.letter = letter
 
   def __str__(self):
-    return self.letter
+    return f"{self.letter} | {self.goal_difference}"
 
   def __eq__(self, other):
     if isinstance(other, Letter):
@@ -13,13 +13,13 @@ class Letter:
 
   def __gt__(self, other):
     if isinstance(other, Letter):
-      return self.goal_difference < other.goal_difference
+      return self.goal_difference > other.goal_difference
 
     return False
 
   def __lt__(self, other):
     if isinstance(other, Letter):
-      return self.goal_difference > other.goal_difference
+      return self.goal_difference < other.goal_difference
 
     return False
 
