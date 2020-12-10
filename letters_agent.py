@@ -1,4 +1,4 @@
-from agent import Agent
+from packages.agent import Agent
 
 class LettersAgent(Agent):
   def __init__(self):
@@ -35,6 +35,7 @@ class LettersAgent(Agent):
       return 4
 
     raise ValueError(f"Given node with value {self.letter} is not a valid one")
+
 
   def _Agent__create_states_space(self):
     # Insert nodes

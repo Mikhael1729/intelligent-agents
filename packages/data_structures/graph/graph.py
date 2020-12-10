@@ -1,6 +1,6 @@
 import numbers
-from node import Node
-from edge import Edge
+from .node import Node
+from .edge import Edge
 from typing import Generic, TypeVar
 
 T = TypeVar('T')

@@ -1,7 +1,7 @@
 import math
-from priority_queue import PriorityQueue
-from graph import Graph
-from node import Node
+from ..data_structures.priority_queue import PriorityQueue 
+from ..data_structures.graph.graph import Graph
+from ..data_structures.graph.node import Node
 from abc import abstractmethod, ABCMeta
 
 """
@@ -10,14 +10,9 @@ It can navigate intelligently through a states space graph.
 class Agent(object, metaclass=ABCMeta):
   def __init__(self):
     self.__states_space = Graph()
-    self.__states_space_is_created = False
+    self.__create_states_space()
 
   def state_exists(self, goal_state):
-    # Initialize the 
-    if not self.__states_space_is_created:
-      self.__create_states_space()
-      self.__states_space_is_created = True
-
     opened = PriorityQueue(
       init_elements=[self.__states_space.get_node(0)],
       map_value=self.__heuristic_function
