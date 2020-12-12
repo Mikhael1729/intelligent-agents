@@ -4,6 +4,7 @@ from ..data_structures.graph.graph import Graph
 from ..data_structures.graph.node import Node
 from abc import abstractmethod, ABCMeta
 from typing import TypeVar, List, Generic
+import numbers
 
 T = TypeVar("T")
 
@@ -14,7 +15,7 @@ class Agent(object, metaclass=ABCMeta):
   def __init__(self):
     self.__states_space: Graph[T] = self.create_states_space()
 
-  def state_exists(self, goal_state):
+  def state_exists_gbfs(self, goal_state):
     opened = PriorityQueue(
       init_elements=[self.__states_space.get_node(0)],
       map_value=self.heuristic_function
@@ -39,7 +40,7 @@ class Agent(object, metaclass=ABCMeta):
     return False
 
   @property
-  def states_space(self) -> List[Graph[T]]:
+  def states_space(self) -> Graph[T]:
     return self.__states_space
 
   @abstractmethod
