@@ -12,6 +12,29 @@ class Graph(Generic[T]):
     self.directed = is_directed
 
   """
+  DFS
+  """
+  def has_path_dfs(self, source, destination):
+    visited_nodes = set()
+    return self.__process_inputs(source, destination, self.__has_path_dfs, visited_nodes)
+
+  def __has_path_dfs(self, source, destination, visited_nodes):
+    if source.id in visited_nodes:
+      return False
+
+    visited_nodes.add(source.id)
+
+    if source == destination:
+      return True
+
+    for adjacent_edge in source.adjacents:
+      there_is_path = self.__has_path_dfs(adjacent_edge.destination, destination, visited_nodes)
+      if there_is_path:
+        return True
+
+    return False
+
+  """
   BFS
   """
   def has_path_bfs(self, source, destination):
