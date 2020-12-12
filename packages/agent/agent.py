@@ -3,22 +3,24 @@ from ..data_structures.priority_queue import PriorityQueue
 from ..data_structures.graph.graph import Graph
 from ..data_structures.graph.node import Node
 from abc import abstractmethod, ABCMeta
+from typing import TypeVar, List, Generic
+
+T = TypeVar("T")
 
 """
 It can navigate intelligently through a states space graph.
 """
 class Agent(object, metaclass=ABCMeta):
   def __init__(self):
-    self.__states_space = Graph()
-    self.__create_states_space()
+    self.__states_space: Graph[T] = self.create_states_space()
 
   def state_exists(self, goal_state):
     opened = PriorityQueue(
       init_elements=[self.__states_space.get_node(0)],
-      map_value=self.__heuristic_function
+      map_value=self.heuristic_function
     )
 
-    closed: List[Node] = []
+    closed: List[Node[T]] = []
 
     while len(opened) != 0:
       most_promising_node = opened.dequeue()
@@ -37,13 +39,13 @@ class Agent(object, metaclass=ABCMeta):
     return False
 
   @property
-  def states_space(self):
+  def states_space(self) -> List[Graph[T]]:
     return self.__states_space
 
   @abstractmethod
-  def __heuristic_function(self, node):
+  def heuristic_function(self, node) -> int:
     raise NotImplementedError
 
   @abstractmethod
-  def __create_states_space(self):
+  def create_states_space(self) -> Graph[T]:
     raise NotImplementedError

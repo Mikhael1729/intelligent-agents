@@ -1,10 +1,11 @@
 from packages.agent import Agent
+from packages.data_structures import Graph
 
 class LettersAgent(Agent):
   def __init__(self):
     super().__init__()
 
-  def _Agent__heuristic_function(self, node):
+  def heuristic_function(self, node):
     value = node.value
 
     if value == "S":
@@ -37,40 +38,44 @@ class LettersAgent(Agent):
     raise ValueError(f"Given node with value {self.letter} is not a valid one")
 
 
-  def _Agent__create_states_space(self):
+  def create_states_space(self):
+    states_space = Graph()
+
     # Insert nodes
-    s = self.states_space.add_node("S")
-    a = self.states_space.add_node("A")
-    b = self.states_space.add_node("B")
-    c = self.states_space.add_node("C")
-    d = self.states_space.add_node("D")
-    e = self.states_space.add_node("E")
-    f = self.states_space.add_node("F")
-    g = self.states_space.add_node("G")
-    h = self.states_space.add_node("H")
-    i = self.states_space.add_node("I")
-    j = self.states_space.add_node("J")
-    k = self.states_space.add_node("K")
-    l = self.states_space.add_node("L")
+    s = states_space.add_node("S")
+    a = states_space.add_node("A")
+    b = states_space.add_node("B")
+    c = states_space.add_node("C")
+    d = states_space.add_node("D")
+    e = states_space.add_node("E")
+    f = states_space.add_node("F")
+    g = states_space.add_node("G")
+    h = states_space.add_node("H")
+    i = states_space.add_node("I")
+    j = states_space.add_node("J")
+    k = states_space.add_node("K")
+    l = states_space.add_node("L")
 
     # Connect them
-    self.states_space.add_edge(s, a, 7)
-    self.states_space.add_edge(s, b, 2)
-    self.states_space.add_edge(s, c, 3)
+    states_space.add_edge(s, a, 7)
+    states_space.add_edge(s, b, 2)
+    states_space.add_edge(s, c, 3)
 
-    self.states_space.add_edge(a, d, 4)
-    self.states_space.add_edge(a, b, 3)
-    self.states_space.add_edge(d, f, 5)
+    states_space.add_edge(a, d, 4)
+    states_space.add_edge(a, b, 3)
+    states_space.add_edge(d, f, 5)
 
-    self.states_space.add_edge(b, d, 4)
-    self.states_space.add_edge(b, h, 1)
-    self.states_space.add_edge(h, f, 3)
-    self.states_space.add_edge(h, g, 2)
-    self.states_space.add_edge(g, e, 2)
+    states_space.add_edge(b, d, 4)
+    states_space.add_edge(b, h, 1)
+    states_space.add_edge(h, f, 3)
+    states_space.add_edge(h, g, 2)
+    states_space.add_edge(g, e, 2)
 
-    self.states_space.add_edge(c, l, 2)
-    self.states_space.add_edge(l, i, 4)
-    self.states_space.add_edge(l, j, 4)
-    self.states_space.add_edge(i, k, 4)
-    self.states_space.add_edge(j, k, 4)
-    self.states_space.add_edge(k, e, 5)
+    states_space.add_edge(c, l, 2)
+    states_space.add_edge(l, i, 4)
+    states_space.add_edge(l, j, 4)
+    states_space.add_edge(i, k, 4)
+    states_space.add_edge(j, k, 4)
+    states_space.add_edge(k, e, 5)
+
+    return states_space
