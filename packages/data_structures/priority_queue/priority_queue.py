@@ -1,29 +1,38 @@
-class PriorityQueue:
-  def __init__(self, init_elements=None, ascending=True, map_value=None):
+from typing import TypeVar, Generic, Callable, Any, List
+
+T = TypeVar('T')
+
+class PriorityQueue(Generic[T]):
+  def __init__(
+    self, 
+    init_elements: List[T]=None,
+    ascending: bool=True,
+    map_value: Callable[[T], Any]=None
+  ):
     self.queue = init_elements if init_elements else []
     self.__ascending = ascending
     self.__heuristic_function = map_value
 
-  def __str__(self):
+  def __str__(self) -> str:
     separator = ', '
     elements_in_string_list = [str(element) for element in self.queue]
 
     return f"[{separator.join(elements_in_string_list)}]"
 
-  def __contains__(self, element):
+  def __contains__(self, element) -> bool:
     return element in self.queue
 
-  def __len__(self):
+  def __len__(self) -> int:
     return len(self.queue)
 
   @property
-  def ascending(self):
+  def ascending(self) -> bool:
     return self.__ascending
 
-  def enqueue(self, element):
+  def enqueue(self, element) -> T:
     self.queue.append(element)
 
-  def dequeue(self):
+  def dequeue(self) -> T:
     try:
       highest_priority = 0 # The element with the greatest value in ascending order or viceversa.
 

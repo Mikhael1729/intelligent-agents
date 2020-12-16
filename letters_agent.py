@@ -1,11 +1,43 @@
 from packages.agent import Agent
-from packages.data_structures import Graph
+from packages.data_structures import Graph, Node
 
-class LettersAgent(Agent):
+class LettersAgent(Agent[str]):
   def __init__(self):
     super().__init__()
 
-  def heuristic_function(self, node):
+  def distance_function(self, node: Node[str]):
+    value = node.value
+
+    if value == "S":
+      return 0
+    elif value == "A":
+      return 7
+    elif value == "B":
+      return 2
+    elif value == "C":
+      return 3
+    elif value == "D":
+      return 4
+    elif value == "E":
+      return 2
+    elif value == "F":
+      return 5
+    elif value == "G":
+      return 2
+    elif value == "H":
+      return 1
+    elif value == "I":
+      return 4
+    elif value == "J":
+      return 4
+    elif value == "K":
+      return 4
+    elif value == "L":
+      return 2
+
+    raise ValueError(f"Given node with value {self.letter} is not a valid one")
+
+  def heuristic_function(self, node: Node[str]):
     value = node.value
 
     if value == "S":
@@ -37,9 +69,8 @@ class LettersAgent(Agent):
 
     raise ValueError(f"Given node with value {self.letter} is not a valid one")
 
-
-  def create_states_space(self):
-    states_space = Graph()
+  def create_states_space(self) -> Graph[str]:
+    states_space = Graph[str]()
 
     # Insert nodes
     s = states_space.add_node("S")

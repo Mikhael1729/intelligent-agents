@@ -1,11 +1,13 @@
-from packages.data_structures import Graph
+from packages.data_structures import Graph, Queue, Stack
 from letters_agent import LettersAgent
+from colors_agent import ColorsAgent
 
-def test_best_first_search():
-  agent = LettersAgent()
-  there_is_path = agent.state_exists_gbfs('E')
+agent = LettersAgent()
+exists = agent.state_exists_asearch('E')
 
+print("exists: ", exists[0])
+print("path: ")
 
-  print(f"there_is_path: {there_is_path}")
+for node in exists[1]:
+	print("  - ", node)
 
-test_best_first_search()

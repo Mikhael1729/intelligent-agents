@@ -1,7 +1,7 @@
 import numbers
 from .node import Node
 from .edge import Edge
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, List
 
 T = TypeVar('T')
 
@@ -62,11 +62,11 @@ class Graph(Generic[T]):
 
     return False
 
-  def add_nodes(self, *values):
+  def add_nodes(self, *values: List[T]) -> None:
     for value in values:
       self.add_node(value)
 
-  def add_node(self, value):
+  def add_node(self, value: T) -> Node[T]:
     new_id = self.__generate_next_node_id()
     new_node = Node[T](new_id, value=value)
     self.nodes[new_id] = new_node
