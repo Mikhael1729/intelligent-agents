@@ -1,7 +1,6 @@
 import math
 from ..data_structures.priority_queue import PriorityQueue 
-from ..data_structures.graph.graph import Graph, Node
-from ..data_structures.graph.node import Node
+from ..data_structures.graph.graph import Graph, Edge
 from abc import abstractmethod, ABCMeta
 from typing import TypeVar, List, Generic, Callable, Generic
 import numbers
@@ -15,36 +14,45 @@ class Agent(Generic[T], metaclass=ABCMeta):
   def __init__(self):
     self.__states_space: Graph[T] = self.create_states_space()
 
-  def state_exists_gbfs(self, goal_state: T) -> (int, List[Node[T]]):
+  def state_exists_gbfs(self, goal_state: T) -> (int, List[Edge[T]]):
     return self.__state_exists(goal_state, self.heuristic_function)
 
-  def state_exists_asearch(self, goal_state: T) -> (int, List[Node[T]]):
-    evaluation_function: Callable[[Node], int] = lambda node: self.heuristic_function(node) + self.distance_function(node)
+  def state_exists_asearch(self, goal_state: T) -> (int, List[Edge[T]]):
+    evaluation_function: Callable[[Edge[T]], int] = lambda edge: (
+      self.heuristic_function(edge) + self.distance_function(edge)
+    )
+
     return self.__state_exists(goal_state, evaluation_function)
 
-  def __state_exists(self, goal_state: T, evaluation_function):
-    path: List[Node[T]] = []
-    opened = PriorityQueue(
-      init_elements=[self.__states_space.get_node(0)],
+  def __state_exists(self, goal_state: T, evaluation_function: Callable[[Edge[T]], int]):
+    edge = Edge[T](
+      id = -1,
+      source = None,
+      destination = self.__states_space.get_node(0),
+      value = 0
+    )
+
+    path: List[Edge[T]] = []
+    opened: PriorityQueue[T] = PriorityQueue[Edge[T]](
+      init_elements=[edge],
       map_value=evaluation_function
     )
 
-    closed: List[Node[T]] = []
+    closed: List[Edge[T]] = []
 
     while len(opened) != 0:
-      most_promising_node = opened.dequeue()
-      path.append(most_promising_node)
-      closed.append(most_promising_node)
+      most_promising_path: Edge[T] = opened.dequeue()
+      path.append(most_promising_path)
+      closed.append(most_promising_path)
 
-      goal_is_found = most_promising_node.value == goal_state
+      goal_is_found = most_promising_path.destination.value == goal_state
       if goal_is_found:
-        closed.append(most_promising_node)
+        closed.append(most_promising_path)
         return (True, path)
 
-      for edge in most_promising_node.adjacents:
-        adjacent_node = edge.destination
-        if adjacent_node not in closed and adjacent_node not in opened:
-          opened.enqueue(adjacent_node)
+      for edge in most_promising_path.destination.adjacents:
+        if edge not in closed and edge not in opened:
+          opened.enqueue(edge)
 
     return (False, path)
 
@@ -53,10 +61,10 @@ class Agent(Generic[T], metaclass=ABCMeta):
     return self.__states_space
 
   @abstractmethod
-  def heuristic_function(self, node: Node[T]) -> int:
+  def heuristic_function(self, edge: Edge[T]) -> int:
     raise NotImplementedError
 
-  def distance_function(self, node: Node[T]) -> int:
+  def distance_function(self, edge: Edge[T]) -> int:
     return 0
 
   @abstractmethod

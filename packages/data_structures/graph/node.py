@@ -18,16 +18,3 @@ class Node(Generic[T]):
 
   def __str__(self):
     return f"Node(id: {self.id}, value: {self.value})"
-
-  def __gt__(self, other):
-    if isinstance(other, Node):
-      return self.value > other.value
-
-    return False
-
-  def __lt__(self, other):
-    if isinstance(other, Node):
-      return self.value < other.value
-
-    return False
-

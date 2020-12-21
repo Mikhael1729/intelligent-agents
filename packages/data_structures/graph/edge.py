@@ -18,4 +18,3 @@ class Edge(Generic[T]):
 
   def __str__(self):
     return f"Edge(id: {self.id}, value: {self.value}, source: {self.source}, destination: {self.destination})"
-
