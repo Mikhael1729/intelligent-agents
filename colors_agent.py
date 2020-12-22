@@ -1,10 +1,11 @@
 from packages.agent import Agent
-from packages.data_structures import Graph
+from packages.data_structures import Graph, Edge
 from typing import List
 from permutations import generate_permutations
 
 class ColorsAgent(Agent):
-  def heuristic_function(self, node):
+  def heuristic_function(self, edge: Edge[List[str]]):
+    node = edge.destination
     colors = node.value
     size = len(colors)
 
@@ -18,7 +19,6 @@ class ColorsAgent(Agent):
         differences -= 1
 
     return differences
-
 
   def create_states_space(self):
     colors = ['red', 'blue', 'green', 'yellow']
