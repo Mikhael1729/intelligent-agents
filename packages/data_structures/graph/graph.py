@@ -78,7 +78,7 @@ class Graph(Generic[T]):
     return new_id
 
   def add_edge(self, source, destination, value):
-    self.__process_inputs(source, destination, self.__add_edge, value)
+    return self.__process_inputs(source, destination, self.__add_edge, value)
 
   def __add_edge(self, source_node, destination_node, value=None):
     new_edge = Edge(
