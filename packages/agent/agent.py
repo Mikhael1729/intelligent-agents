@@ -3,6 +3,7 @@ from ..data_structures.priority_queue import PriorityQueue
 from ..data_structures.graph.graph import Graph, Edge
 from abc import abstractmethod, ABCMeta
 from typing import TypeVar, List, Generic, Callable, Generic
+from graphviz import Digraph as VizDigraph, Graph as VizGraph
 import numbers
 
 T = TypeVar("T")
@@ -70,3 +71,18 @@ class Agent(Generic[T], metaclass=ABCMeta):
   @abstractmethod
   def create_states_space(self) -> Graph[T]:
     raise NotImplementedError
+
+  def print_states_space(self) -> None:
+    g = VizDigraph('G', filename='./test_output/states_space.gv')
+
+    states_space: Graph[T]= self.states_space
+
+    edge: Edge[T]
+    for edge in states_space.edges:
+      source_value = str(edge.source.value)
+      destination_value = str(edge.destination.value)
+      label = str(edge.value)
+
+      g.edge(source_value, destination_value, label=label)
+
+    g.view()

@@ -45,7 +45,6 @@ class ColorsAgent(Agent):
             child_state = states_space.add_node(child_value)
 
             connection = states_space.add_edge(parent_state, child_state, child_action)
-            print(connection)
 
         last_parent = parent_value
 
