@@ -10,14 +10,14 @@ Before running the program, install the dependencies:
 
 1. Activate the virtual environment:
 
-  ```bash
-  source venv/bin/activate
-  ```
+    ```bash
+    source venv/bin/activate
+    ```
 2. Install the dependencies:
 
-  ```bash
-  install -r requirements.txt
-  ```
+    ```bash
+    install -r requirements.txt
+    ```
 
 ## Run the program
 
