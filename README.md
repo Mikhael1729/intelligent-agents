@@ -11,7 +11,7 @@ Before running the program, install the dependencies:
 1. Activate the virtual environment:
 
   ```bash
-  venv/bin/activate
+  source venv/bin/activate
   ```
 2. Install the dependencies:
 
@@ -21,8 +21,10 @@ Before running the program, install the dependencies:
 
 ## Run the program
 
-After installing the dependencies, you can run the program. Type this:
+Run the program after dependencies has been installed by typing the following command::
 
 ```
 python3 main.py
 ```
+
+Remember you must have been activated the virtual environment before executing the command above (`Installation.1`)
