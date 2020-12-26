@@ -22,15 +22,16 @@ class ColorsAgent(Agent):
   def create_states_space(self):
     colors = ['R', 'B', 'G', 'Y']
     permutations = generate_permutations(colors)
+    rpermutations = filter(lambda S: True if S[0] == 'R' else False, permutations)
 
     states_space = Graph[List[str]](allow_node_repetition=False)
     initial_state = states_space.add_node([""])
     depth = 3
 
-    initial_state_candidate = None
-    for colors_distribution in permutations:
+    for colors_distribution in rpermutations:
       colors_distribution.append(colors_distribution[0])
       last_parent = None
+      initial_state_candidate = None
 
       for i in range(0, depth):
         parent_action = (i, i + 1)
@@ -59,7 +60,6 @@ class ColorsAgent(Agent):
         # Connect parent node of each component of states space with the initial state.
         if initial_state_candidate:
           states_space.add_edge(initial_state, initial_state_candidate, (0, 0))
-          initial_state_candidate = None
 
         last_parent = parent_value
 
