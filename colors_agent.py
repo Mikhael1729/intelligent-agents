@@ -5,14 +5,13 @@ from permutations import generate_permutations
 
 class ColorsAgent(Agent):
   def heuristic_function(self, edge: Edge[List[str], Tuple[int, int]]):
-    node = edge.destination
-    colors = node.value
+    colors = edge.destination.value
     size = len(colors)
 
     differences = 4
     for i in range(0, size):
       for j in range(0, size - 1):
-        if colors[i] != colors[j]:
+        if i != j and colors[i] != colors[j]:
           differences -= 1
 
       if colors[i] == colors[-1]:
@@ -27,7 +26,7 @@ class ColorsAgent(Agent):
     states_space = Graph[List[str]](allow_node_repetition=False)
     initial_state = states_space.add_node([""])
     depth = 3
-    
+
     initial_state_candidate = None
     for colors_distribution in permutations:
       colors_distribution.append(colors_distribution[0])

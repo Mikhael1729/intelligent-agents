@@ -15,6 +15,7 @@ It can navigate intelligently through a states space graph.
 class Agent(Generic[T], metaclass=ABCMeta):
   def __init__(self):
     self.__states_space: Graph[T] = self.create_states_space()
+    self.__actions = []
 
   def state_exists_gbfs(self, goal_state: T) -> (int, List[Edge[T, U]]):
     return self.__state_exists(goal_state, self.heuristic_function)
@@ -27,6 +28,8 @@ class Agent(Generic[T], metaclass=ABCMeta):
     return self.__state_exists(goal_state, evaluation_function)
 
   def __state_exists(self, goal_state: T, evaluation_function: Callable[[Edge[T, U]], int]):
+    self.__actions = []
+
     edge = Edge[T, U](
       id = -1,
       source = None,
@@ -46,6 +49,8 @@ class Agent(Generic[T], metaclass=ABCMeta):
       most_promising_path: Edge[T, U] = opened.dequeue()
       path.append(most_promising_path)
       closed.append(most_promising_path)
+
+      self.__actions.append(most_promising_path.id)
 
       goal_is_found = most_promising_path.destination.value == goal_state
       if goal_is_found:
@@ -79,11 +84,18 @@ class Agent(Generic[T], metaclass=ABCMeta):
     states_space: Graph[T]= self.states_space
 
     edge: Edge[T, U]
-    for edge in states_space.edges:
+    for i, edge in enumerate(states_space.edges):
       source_value = str(edge.source.value) 
       destination_value = str(edge.destination.value)
       label = str(edge.value)
 
-      g.edge(source_value, destination_value, label=label)
+      color = None
+      if edge.id in self.__actions:
+        if self.__actions[-1] == edge.id:
+          color = 'red'
+        else: 
+          color = 'blue'
+
+      g.edge(source_value, destination_value, label=label, color=color )
 
     g.view()
