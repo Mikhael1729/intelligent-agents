@@ -6,10 +6,15 @@ from typing import Generic, TypeVar, List
 T = TypeVar('T')
 
 class Graph(Generic[T]):
-  def __init__(self, is_directed=True):
+  def __init__(self, is_directed=True, allow_node_repetition=True):
     self.nodes = {} # Nodes dictionary.
     self.edges = [] # List of edges.
     self.directed = is_directed
+    self.__allow_node_repetition = allow_node_repetition
+
+  @property
+  def allow_node_repetition(self):
+    return self.__allow_node_repetition
 
   """
   DFS
@@ -67,6 +72,17 @@ class Graph(Generic[T]):
       self.add_node(value)
 
   def add_node(self, value: T) -> Node[T]:
+    if self.allow_node_repetition:
+      return self.__register_node(value) 
+    else:
+      nodes: List[Node[T]] = self.nodes.values()
+      for node in nodes:
+        if node.value == value:
+          return node
+
+      return self.__register_node(value)
+
+  def __register_node(self, value):
     new_id = self.__generate_next_node_id()
     new_node = Node[T](new_id, value=value)
     self.nodes[new_id] = new_node

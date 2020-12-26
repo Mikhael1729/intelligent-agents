@@ -5,10 +5,10 @@ class LettersAgent(Agent[str]):
   def __init__(self):
     super().__init__()
 
-  def distance_function(self, edge: Edge[str]) -> int:
+  def distance_function(self, edge: Edge[str, int]) -> int:
     return edge.value
 
-  def heuristic_function(self, edge: Edge[str]) -> int:
+  def heuristic_function(self, edge: Edge[str, int]) -> int:
     value = edge.destination.value
 
     if value == "S":

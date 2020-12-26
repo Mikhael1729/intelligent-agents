@@ -7,6 +7,7 @@ from graphviz import Digraph as VizDigraph, Graph as VizGraph
 import numbers
 
 T = TypeVar("T")
+U = TypeVar("U")
 
 """
 It can navigate intelligently through a states space graph.
@@ -15,34 +16,34 @@ class Agent(Generic[T], metaclass=ABCMeta):
   def __init__(self):
     self.__states_space: Graph[T] = self.create_states_space()
 
-  def state_exists_gbfs(self, goal_state: T) -> (int, List[Edge[T]]):
+  def state_exists_gbfs(self, goal_state: T) -> (int, List[Edge[T, U]]):
     return self.__state_exists(goal_state, self.heuristic_function)
 
-  def state_exists_asearch(self, goal_state: T) -> (int, List[Edge[T]]):
-    evaluation_function: Callable[[Edge[T]], int] = lambda edge: (
+  def state_exists_asearch(self, goal_state: T) -> (int, List[Edge[T, U]]):
+    evaluation_function: Callable[[Edge[T, U]], int] = lambda edge: (
       self.heuristic_function(edge) + self.distance_function(edge)
     )
 
     return self.__state_exists(goal_state, evaluation_function)
 
-  def __state_exists(self, goal_state: T, evaluation_function: Callable[[Edge[T]], int]):
-    edge = Edge[T](
+  def __state_exists(self, goal_state: T, evaluation_function: Callable[[Edge[T, U]], int]):
+    edge = Edge[T, U](
       id = -1,
       source = None,
       destination = self.__states_space.get_node(0),
       value = 0
     )
 
-    path: List[Edge[T]] = []
-    opened: PriorityQueue[T] = PriorityQueue[Edge[T]](
+    path: List[Edge[T, U]] = []
+    opened: PriorityQueue[T] = PriorityQueue[Edge[T, U]](
       init_elements=[edge],
       map_value=evaluation_function
     )
 
-    closed: List[Edge[T]] = []
+    closed: List[Edge[T, U]] = []
 
     while len(opened) != 0:
-      most_promising_path: Edge[T] = opened.dequeue()
+      most_promising_path: Edge[T, U] = opened.dequeue()
       path.append(most_promising_path)
       closed.append(most_promising_path)
 
@@ -62,10 +63,10 @@ class Agent(Generic[T], metaclass=ABCMeta):
     return self.__states_space
 
   @abstractmethod
-  def heuristic_function(self, edge: Edge[T]) -> int:
+  def heuristic_function(self, edge: Edge[T, U]) -> int:
     raise NotImplementedError
 
-  def distance_function(self, edge: Edge[T]) -> int:
+  def distance_function(self, edge: Edge[T, U]) -> int:
     return 0
 
   @abstractmethod
@@ -77,9 +78,9 @@ class Agent(Generic[T], metaclass=ABCMeta):
 
     states_space: Graph[T]= self.states_space
 
-    edge: Edge[T]
+    edge: Edge[T, U]
     for edge in states_space.edges:
-      source_value = str(edge.source.value)
+      source_value = str(edge.source.value) 
       destination_value = str(edge.destination.value)
       label = str(edge.value)
 
