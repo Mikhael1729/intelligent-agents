@@ -20,11 +20,10 @@ class Node(Generic[T]):
     return f"Node(id: {self.id}, value: {self.value})"
 
   def connection_with_value_exists(self, value):
-    connection_exists = False
     for edge in self.adjacents:
       if edge.value == value:
-        connection_exists = True
-        break
+        return True
 
-    return connection_exists
+    return False
+
 
