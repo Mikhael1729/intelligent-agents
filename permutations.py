@@ -1,7 +1,27 @@
-def generate_permutations(elements):
-  if len(elements) <= 1:
+from typing import List, TypeVar
+T = TypeVar('T')
+
+def _permute(elements: List[T], i: int):
+  """
+  Heaps algorithm to compute a list elements with n elements
+  """
+  if i == 1:
     yield elements
   else:
-    for perm in generate_permutations(elements[1:]):
-      for i in range(len(elements)):
-        yield perm[:i] + elements[0:1] + perm[i:]
+    for j in range(i - 1):
+      for permutation in _permute(elements, i - 1):
+        yield permutation
+
+      k = 0 if i % 2 == 1 else j
+
+      elements[k], elements[i - 1] = elements[i - 1], elements[k]
+
+    for permutation in _permute(elements, i - 1):
+      yield permutation
+
+def permutations(elements):
+  """
+  Compute all distinct permutations of elements list using the
+  Heap's algorithm.
+  """
+  return _permute(elements, len(elements))
