@@ -28,6 +28,9 @@ class Agent(Generic[T], metaclass=ABCMeta):
     return self.__state_exists(goal_state, evaluation_function)
 
   def __state_exists(self, goal_state: T, evaluation_function: Callable[[Edge[T, U]], int]):
+    if len(self.__states_space.nodes) == 0:
+      return False
+
     self.__actions = []
 
     edge = Edge[T, U](
