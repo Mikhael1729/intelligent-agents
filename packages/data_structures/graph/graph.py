@@ -6,15 +6,20 @@ from typing import Generic, TypeVar, List
 T = TypeVar('T')
 
 class Graph(Generic[T]):
-  def __init__(self, is_directed=True, allow_node_repetition=True):
+  def __init__(self, is_directed=True, allow_node_repetition=True, allow_edge_duplicates=True):
     self.nodes = {} # Nodes dictionary.
     self.edges = [] # List of edges.
     self.directed = is_directed
+    self.__allow_edge_duplicates = allow_edge_duplicates
     self.__allow_node_repetition = allow_node_repetition
 
   @property
   def allow_node_repetition(self):
     return self.__allow_node_repetition
+
+  @property
+  def allow_edge_duplicates(self):
+    return self.__allow_edge_duplicates
 
   """
   DFS
@@ -72,15 +77,13 @@ class Graph(Generic[T]):
       self.add_node(value)
 
   def add_node(self, value: T) -> Node[T]:
-    if self.allow_node_repetition:
-      return self.__register_node(value) 
-    else:
+    if not self.allow_node_repetition:
       nodes: List[Node[T]] = self.nodes.values()
       for node in nodes:
         if node.value == value:
           return node
 
-      return self.__register_node(value)
+    return self.__register_node(value)
 
   def __register_node(self, value):
     new_id = self.__generate_next_node_id()
@@ -97,6 +100,14 @@ class Graph(Generic[T]):
     return self.__process_inputs(source, destination, self.__add_edge, value)
 
   def __add_edge(self, source_node, destination_node, value=None):
+    if not self.allow_edge_duplicates:
+      for transformed_edge in destination_node.adjacents:
+        if transformed_edge.value == value:
+          return transformed_edge
+
+    return self.__register_edge(source_node, destination_node, value)
+
+  def __register_edge(self, source_node, destination_node, value=None):
     new_edge = Edge(
       id = self.__generate_next_edge_id(),
       value = value,
@@ -112,6 +123,7 @@ class Graph(Generic[T]):
       self.nodes[destination_node.id].adjacents.append(new_edge)
 
     return new_edge
+
 
   def __generate_next_edge_id(self):
     last_edge = self.edges[-1] if self.edges else None
