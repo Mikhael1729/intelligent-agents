@@ -20,9 +20,9 @@ class ColorsAgent(Agent):
     return differences
 
   def create_states_space(self):
-    initial_state_value = ['B', 'G', 'Y', 'R', 'R°']
+    initial_state_value = ['B', 'G', 'Y', 'R', 'R']
     colors_permutations = permutations(initial_state_value, self.__permutation)
-    states_space = Graph[List[str]](allow_node_repetition=False, allow_edge_duplicates=False)
+    states_space = Graph[List[str]](allow_node_repetition=False, allow_edge_duplicates=False, allow_self_loops=False)
 
     # Connect each permutation
     for i in range(0, len(colors_permutations) - 1):
