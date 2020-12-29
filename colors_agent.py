@@ -1,7 +1,7 @@
 from packages.agent import Agent
 from packages.data_structures import Graph, Edge
 from typing import List, Tuple
-from permutations import generate_permutations
+from permutations import permutations
 
 class ColorsAgent(Agent):
   def heuristic_function(self, edge: Edge[List[str], Tuple[int, int]]):
@@ -20,55 +20,53 @@ class ColorsAgent(Agent):
     return differences
 
   def create_states_space(self):
-    colors = ['R', 'B', 'G', 'Y']
-    permutations = generate_permutations(colors)
-    rpermutations = filter(lambda S: True if S[0] == 'R' else False, permutations)
+    initial_state_value = ['B', 'G', 'Y', 'R', 'R°']
+    colors_permutations = permutations(initial_state_value, self.__permutation)
 
     states_space = Graph[List[str]](allow_node_repetition=False)
-    initial_state = states_space.add_node([""])
-    depth = 3
 
-    for colors_distribution in rpermutations:
-      colors_distribution.append(colors_distribution[0])
-      last_parent = None
-      initial_state_candidate = None
+    # Connect each permutation
+    for i in range(0, len(colors_permutations) - 1):
+      source_value = colors_permutations[i]
+      destination_value = colors_permutations[i + 1]
 
-      for i in range(0, depth):
-        parent_action = (i, i + 1)
-        parent_value = self.__transform_state(last_parent if last_parent else colors_distribution, parent_action)
-        ancestor_action = (parent_action[0] + 1, parent_action[1] + 1)
+      source = states_space.add_node(source_value[0])
+      destination = states_space.add_node(destination_value[0])
 
-        count = 0
-        for j in range(0, depth):
-          child_action = (j, j + 1)
+      states_space.add_edge(source, destination, destination_value[1])
 
-          action_is_allowed = child_action != ancestor_action # If child_state will no be the same as its parent_state.
-          if action_is_allowed:
-            child_value = self.__transform_state(parent_value, child_action)
-            parent_state = states_space.add_node(parent_value)
-            child_state = states_space.add_node(child_value)
+    # Add the rest of connections.
+    edge: Edge[List[str], Tuple[int, int]]
+    size = len(states_space.edges)
 
-            connection_exists = child_state.connection_with_value_exists(child_action)
+    for i in range(0, size):
+      edge = states_space.edges[i]
 
-            if not connection_exists:
-              connection = states_space.add_edge(parent_state, child_state, child_action)
+      for j in range(0, len(initial_state_value) - 1):
+        action = (j, j + 1)
 
-              count += 1
-              if count == depth:
-                initial_state_candidate = parent_state
+        if edge.value != action:
+          transformed_source_state = states_space.add_node(self.__transform_state(edge.source.value, action))
 
-        # Connect parent node of each component of states space with the initial state.
-        if initial_state_candidate:
-          states_space.add_edge(initial_state, initial_state_candidate, (0, 0))
+          # Disable source destination loop.
+          there_is_loop = False
 
-        last_parent = parent_value
+          for transformed_edge in transformed_source_state.adjacents:
+            if transformed_edge.value == action:
+              there_is_loop = True
+              break
+
+          if not there_is_loop:
+            new_edge = states_space.add_edge(edge.source, transformed_source_state, action)
 
     return states_space
 
   def __transform_state(self, state: List[str], action: Tuple[int, int]):
     transformed: List[str] = state.copy()
-
     i, j = action[0], action[1]
     transformed[i], transformed[j] = transformed[j], transformed[i]
 
     return transformed
+
+  def __permutation(self, permutation: List, i: int, j: int):
+    return (permutation, (i, j))
