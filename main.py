@@ -1,6 +1,6 @@
 from packages.data_structures import Graph, Queue, Stack
-from letters_agent import LettersAgent
-from colors_agent import ColorsAgent
+from examples.letters_agent import LettersAgent
+from examples.colors_agent import ColorsAgent
 
 agent = ColorsAgent()
 exists = agent.state_exists_asearch(['R', 'B', 'G', 'Y', 'R'])

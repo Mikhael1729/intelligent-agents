@@ -1,7 +1,7 @@
 from packages.agent import Agent, Action
 from packages.data_structures import Graph, Edge
 from typing import List, Tuple, Dict
-from permutations import permutations
+from packages.permutations import permutations
 
 EdgeType = Edge[List[str], Tuple[int, int]]
 
