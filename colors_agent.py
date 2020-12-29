@@ -22,18 +22,13 @@ class ColorsAgent(Agent):
   def create_states_space(self):
     initial_state_value = ['B', 'G', 'Y', 'R', 'R°']
     colors_permutations = permutations(initial_state_value, self.__permutation)
-
-    states_space = Graph[List[str]](allow_node_repetition=False)
+    states_space = Graph[List[str]](allow_node_repetition=False, allow_edge_duplicates=False)
 
     # Connect each permutation
     for i in range(0, len(colors_permutations) - 1):
-      source_value = colors_permutations[i]
-      destination_value = colors_permutations[i + 1]
-
-      source = states_space.add_node(source_value[0])
-      destination = states_space.add_node(destination_value[0])
-
-      states_space.add_edge(source, destination, destination_value[1])
+      source = states_space.add_node(colors_permutations[i][0])
+      destination = states_space.add_node(colors_permutations[i + 1][0])
+      states_space.add_edge(source, destination, colors_permutations[i + 1][1])
 
     # Add the rest of connections.
     edge: Edge[List[str], Tuple[int, int]]
@@ -47,17 +42,7 @@ class ColorsAgent(Agent):
 
         if edge.value != action:
           transformed_source_state = states_space.add_node(self.__transform_state(edge.source.value, action))
-
-          # Disable source destination loop.
-          there_is_loop = False
-
-          for transformed_edge in transformed_source_state.adjacents:
-            if transformed_edge.value == action:
-              there_is_loop = True
-              break
-
-          if not there_is_loop:
-            new_edge = states_space.add_edge(edge.source, transformed_source_state, action)
+          new_edge = states_space.add_edge(edge.source, transformed_source_state, action)
 
     return states_space
 
