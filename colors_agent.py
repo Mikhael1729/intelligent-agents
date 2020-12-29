@@ -1,6 +1,6 @@
-from packages.agent import Agent
+from packages.agent import Agent, Action
 from packages.data_structures import Graph, Edge
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from permutations import permutations
 
 EdgeType = Edge[List[str], Tuple[int, int]]
@@ -10,19 +10,25 @@ class ColorsAgent(Agent):
     colors = edge.destination.value
     size = len(colors)
 
-    differences = 4
-    for i in range(0, size):
-      for j in range(0, size - 1):
-        if i != j and colors[i] != colors[j]:
-          differences -= 1
+    i = 0
+    for color in colors:
+      if color == 'R':
+        break
+      i += 1
 
-      if colors[i] == colors[-1]:
-        differences -= 1
+    if colors[-1] == 'R':
+      return i
 
-    return differences
+    for j in range(i + 1, size):
+      color = colors[j]
+      if color == 'R':
+        distance_to_last = (size - 1) - j
+        return distance_to_last + i
 
-  def distance_function(self, edge: EdgeType, actions: List[EdgeType]):
-    return len(actions)
+    return 0
+
+  def distance_function(self, edge: EdgeType, distance: int):
+    return distance
 
   def create_states_space(self):
     initial_state_value = ['B', 'G', 'Y', 'R', 'R']
