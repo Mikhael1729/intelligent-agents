@@ -1,11 +1,12 @@
 from packages.agent import Agent
 from packages.data_structures import Graph, Node, Edge
+from typing import List
 
 class LettersAgent(Agent[str]):
   def __init__(self):
     super().__init__()
 
-  def distance_function(self, edge: Edge[str, int]) -> int:
+  def distance_function(self, edge: Edge[str, int], actions: List[Edge[str, int]]) -> int:
     return edge.value
 
   def heuristic_function(self, edge: Edge[str, int]) -> int:
