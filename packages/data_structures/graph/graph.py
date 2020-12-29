@@ -6,12 +6,13 @@ from typing import Generic, TypeVar, List
 T = TypeVar('T')
 
 class Graph(Generic[T]):
-  def __init__(self, is_directed=True, allow_node_repetition=True, allow_edge_duplicates=True):
+  def __init__(self, is_directed=True, allow_node_repetition=True, allow_edge_duplicates=True, allow_self_loops=True):
     self.nodes = {} # Nodes dictionary.
     self.edges = [] # List of edges.
     self.directed = is_directed
     self.__allow_edge_duplicates = allow_edge_duplicates
     self.__allow_node_repetition = allow_node_repetition
+    self.__allow_self_loops = allow_self_loops
 
   @property
   def allow_node_repetition(self):
@@ -20,6 +21,10 @@ class Graph(Generic[T]):
   @property
   def allow_edge_duplicates(self):
     return self.__allow_edge_duplicates
+
+  @property
+  def allow_self_loops(self):
+    return self.__allow_self_loops
 
   """
   DFS
@@ -100,10 +105,20 @@ class Graph(Generic[T]):
     return self.__process_inputs(source, destination, self.__add_edge, value)
 
   def __add_edge(self, source_node, destination_node, value=None):
+    # Prevent edges from source to destination with the same value.
     if not self.allow_edge_duplicates:
-      for transformed_edge in destination_node.adjacents:
-        if transformed_edge.value == value:
-          return transformed_edge
+      for destination_edge in destination_node.adjacents:
+        if destination_edge.value == value:
+          return destination_edge
+
+      # Prevent source self loops.
+      for source_edge in source_node.adjacents:
+        if value == source_edge.value:
+          return source_edge
+
+    if not self.allow_self_loops:
+      if source_node.id == destination_node.id:
+        return None
 
     return self.__register_edge(source_node, destination_node, value)
 
@@ -123,7 +138,6 @@ class Graph(Generic[T]):
       self.nodes[destination_node.id].adjacents.append(new_edge)
 
     return new_edge
-
 
   def __generate_next_edge_id(self):
     last_edge = self.edges[-1] if self.edges else None
