@@ -3,8 +3,10 @@ from packages.data_structures import Graph, Edge
 from typing import List, Tuple
 from permutations import permutations
 
+EdgeType = Edge[List[str], Tuple[int, int]]
+
 class ColorsAgent(Agent):
-  def heuristic_function(self, edge: Edge[List[str], Tuple[int, int]]):
+  def heuristic_function(self, edge: EdgeType):
     colors = edge.destination.value
     size = len(colors)
 
@@ -18,6 +20,9 @@ class ColorsAgent(Agent):
         differences -= 1
 
     return differences
+
+  def distance_function(self, edge: EdgeType, actions: List[EdgeType]):
+    return len(actions)
 
   def create_states_space(self):
     initial_state_value = ['B', 'G', 'Y', 'R', 'R']
