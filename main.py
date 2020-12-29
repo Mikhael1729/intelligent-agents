@@ -3,7 +3,7 @@ from letters_agent import LettersAgent
 from colors_agent import ColorsAgent
 
 agent = ColorsAgent()
-exists = agent.state_exists_asearch(['R', 'B', 'G', 'Y', 'R°'])
+exists = agent.state_exists_asearch(['R', 'B', 'G', 'Y', 'R'])
 
 # Print the path in console.
 print("exists: ", exists[0])
