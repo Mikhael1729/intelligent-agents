@@ -15,14 +15,22 @@ It can navigate intelligently through a states space graph.
 class Agent(Generic[T], metaclass=ABCMeta):
   def __init__(self):
     self.__states_space: Graph[T] = self.create_states_space()
-    self.__actions = []
+    self.__actions: List[Edge[T, U]] = []
+
+  @property
+  def states_space(self) -> Graph[T]:
+    return self.__states_space
+
+  @property
+  def actions(self):
+    return self.__actions
 
   def state_exists_gbfs(self, goal_state: T) -> (int, List[Edge[T, U]]):
     return self.__state_exists(goal_state, self.heuristic_function)
 
   def state_exists_asearch(self, goal_state: T) -> (int, List[Edge[T, U]]):
     evaluation_function: Callable[[Edge[T, U]], int] = lambda edge: (
-      self.heuristic_function(edge) + self.distance_function(edge)
+      self.heuristic_function(edge) + self.distance_function(edge, self.actions)
     )
 
     return self.__state_exists(goal_state, evaluation_function)
@@ -66,15 +74,11 @@ class Agent(Generic[T], metaclass=ABCMeta):
 
     return (False, path)
 
-  @property
-  def states_space(self) -> Graph[T]:
-    return self.__states_space
-
   @abstractmethod
   def heuristic_function(self, edge: Edge[T, U]) -> int:
     raise NotImplementedError
 
-  def distance_function(self, edge: Edge[T, U]) -> int:
+  def distance_function(self, edge: Edge[T, U], actions: List[Edge[T, U]]) -> int:
     return 0
 
   @abstractmethod
